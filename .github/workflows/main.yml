@@ -1,0 +1,31 @@
+name: Atualização Automática Agro
+on:
+  schedule:
+    - cron: '0 */4 * * *' # Atualiza a cada 4 horas
+  workflow_dispatch:      # Permite rodar manualmente se quiser
+
+jobs:
+  update-data:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Código
+        uses: actions/checkout@v3
+      
+      - name: Configurar Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.9'
+          
+      - name: Instalar Dependências
+        run: pip install -r requirements.txt
+        
+      - name: Rodar Coletor de Preços
+        run: python execution/scrape_cepea.py
+        
+      - name: Salvar Mudanças no Site
+        run: |
+          git config --global user.name 'AgroBot'
+          git config --global user.email 'bot@jacto.com'
+          git add cepea_data.json cepea_data.js
+          git commit -m "📈 Atualização automática de preços [skip ci]" || echo "Sem mudanças"
+          git push
