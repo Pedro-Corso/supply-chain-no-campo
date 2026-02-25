@@ -1242,19 +1242,11 @@
             };
 
             fList.innerHTML = data.map(item => {
-                const info = algoInfo[item.name] || { model: "Reg Linear", bias: 0, conf: 80 };
-
-                // Parsing Robusto: Remove pontos de milhar e troca vírgula por ponto
-                const cleanPrice = (item.price || '0,00').replace(/\./g, '').replace(',', '.');
-                const basePrice = parseFloat(cleanPrice);
-
-                if (isNaN(basePrice)) return '';
-
-                // Simulação de Projeção com Viés de Mercado Real 2026
-                const randomFactor = (Math.sin(Date.now() / 20000) * 0.02) + (Math.random() * 0.01 - 0.005);
-                const trend = (info.bias + randomFactor) * 100;
-                const projected = (basePrice * (1 + (trend / 100))).toFixed(2);
-                const isUp = trend > 0;
+                const projectedPrice = item.projected_price || item.price;
+                const trendStr = item.projected_trend || '0,00%';
+                const conf = item.conf || 85;
+                const model = item.model || 'IA';
+                const isUp = !trendStr.includes('-');
 
                 return `
                 <div class="commodity-item" style="padding: 12px 0;">
@@ -1264,13 +1256,13 @@
                             <i class="fas fa-check-double" style="color: #27ae60; font-size: 0.6rem;" title="Dupla Checagem Histórica"></i>
                         </div>
                         <div style="display: flex; flex-direction: column;">
-                            <span class="algo-tag">${info.model}</span>
-                            <div class="reliability-tag"><i class="fas fa-shield-alt"></i> ${info.conf}% Confiança</div>
+                            <span class="algo-tag">${model}</span>
+                            <div class="reliability-tag"><i class="fas fa-shield-alt"></i> ${conf}% Confiança</div>
                         </div>
                     </div>
                     <div class="commodity-price-box">
-                        <span class="commodity-price">R$ ${parseFloat(projected).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</span>
-                        <span class="commodity-var ${isUp ? 'var-up' : 'var-down'}">${isUp ? '↑' : '↓'} ${Math.abs(trend).toFixed(2)}%</span>
+                        <span class="commodity-price">R$ ${projectedPrice}</span>
+                        <span class="commodity-var ${isUp ? 'var-up' : 'var-down'}">${isUp ? '↑' : '↓'} ${trendStr.replace('+', '').replace('-', '')}</span>
                     </div>
                 </div>`;
             }).join('');
