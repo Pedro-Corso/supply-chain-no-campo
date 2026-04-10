@@ -3,36 +3,27 @@
 
 <head>
     <meta charset="UTF-8">
+    <!-- Security & Performance -->
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://api.rss2json.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com; font-src 'self' https://fonts.gstatic.com https://cdnjs.cloudflare.com; img-src 'self' data: https://images.unsplash.com https://cepea.org.br; connect-src 'self' https://api.rss2json.com cepea_data.json cepea_data.js; frame-ancestors 'none';">
+    <meta http-equiv="X-Frame-Options" content="DENY">
+    <meta name="referrer" content="no-referrer-when-downgrade">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Supply Chain no Campo - Inteligência Estratégica Agro Jacto</title>
-    <meta name="description"
-        content="Dashboard em tempo real de inteligência para agronegócio, cotações CEPEA e projeções de IA para a cadeia de suprimentos Jacto.">
-    <meta name="keywords"
-        content="agronegócio, supply chain, Jacto, CEPEA, soja, milho, tendências agro, IA agronegócio">
-    <meta name="author" content="Supply Chain no Campo Team">
-    <!-- Open Graph / Social Media -->
-    <meta property="og:title" content="Supply Chain no Campo - Dashboard Agro">
-    <meta property="og:description"
-        content="Monitoramento estratégico de commodities e notícias globais do agronegócio.">
-    <meta property="og:type" content="website">
+    <title>Supply Chain no Campo | Jacto</title>
     <!-- Google Fonts -->
-    <link
-        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Outfit:wght@400;600;700&display=swap"
-        rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@600;700&display=swap" rel="stylesheet">
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
-            --primary: #1b4d3e;
-            /* Verde Floresta */
-            --accent: #7ab317;
-            /* Verde Agro */
-            --bg: #f9fbf9;
-            --white: #ffffff;
-            --text-main: #2d3436;
-            --text-muted: #636e72;
-            --shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
-            --radius: 24px;
+            /* 5-Tone Palette: Light (Slate / Emerald) */
+            --bg: #f8fafc;
+            --surface: #ffffff;
+            --primary: #0f172a;
+            --accent: #10b981;
+            --border: #e2e8f0;
+            --text-muted: #64748b;
+            --shadow: 0 10px 25px rgba(15, 23, 42, 0.05);
+            --radius: 20px;
         }
 
         * {
@@ -44,10 +35,10 @@
 
         body {
             background-color: var(--bg);
-            color: var(--text-main);
+            color: var(--primary);
             line-height: 1.6;
             min-height: 100vh;
-            overflow-y: auto;
+            overflow-x: hidden;
             display: flex;
             flex-direction: column;
             position: relative;
@@ -74,30 +65,34 @@
         .container {
             flex-grow: 1;
             width: 100%;
-            max-width: 1200px;
-            margin: -100px auto 0;
+            max-width: 1600px; 
+            margin: -60px auto 0;
             padding: 0 20px 4rem;
-            /* Espaçamento lateral padrão para mobile */
             position: relative;
             z-index: 5;
             display: flex;
             justify-content: center;
         }
 
-        @media (min-width: 1300px) {
+        @media (min-width: 768px) {
             .container {
-                padding: 0 250px 4rem;
-                /* Restaura o padding original para telas ultra-wide */
+                padding: 0 20px 4rem; /* Padding padrão, o controle agora é no painel */
+            }
+            .sidebar {
+                display: block; 
             }
         }
 
         .main-panel {
             width: 100%;
             max-width: 1000px;
+            /* Em telas desktop, garantimos que o painel não invada o espaço da sidebar (210px + 40px de margem em cada lado) */
+            @media (min-width: 768px) {
+                width: min(1000px, calc(100vw - 520px));
+            }
             min-height: 600px;
             height: fit-content;
             background: rgba(255, 255, 255, 0.88);
-            /* Aumentada opacidade do painel para ler melhor sobre o fundo */
             backdrop-filter: blur(25px);
             border: 1px solid rgba(255, 255, 255, 0.4);
             border-radius: 24px;
@@ -105,13 +100,14 @@
             box-shadow: 0 20px 50px rgba(0, 0, 0, 0.1);
             display: flex;
             flex-direction: column;
+            overflow: hidden;
         }
 
         /* Hero Section */
         .hero {
             position: relative;
             height: 400px;
-            margin-bottom: -100px;
+            margin-bottom: -60px;
             border-radius: 0 0 var(--radius) var(--radius);
             overflow: hidden;
             background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.2));
@@ -161,7 +157,7 @@
             background: transparent;
             padding: 0 0 1.5rem 0;
             border-bottom: 1px solid rgba(0, 0, 0, 0.05);
-            margin-bottom: 1.5rem;
+            margin-bottom: 0.5rem;
             display: flex;
             flex-wrap: wrap;
             justify-content: space-between;
@@ -205,17 +201,22 @@
 
         .btn-refresh {
             background: var(--accent);
-            color: white;
+            color: #020617; /* Dark text for better contrast on green */
         }
 
         .btn-refresh:hover {
             transform: translateY(-2px);
-            box-shadow: 0 8px 20px rgba(122, 179, 23, 0.3);
+            box-shadow: 0 8px 20px rgba(16, 185, 129, 0.3);
         }
 
         .btn-lang {
-            background: #f1f3f1;
+            background: var(--surface);
             color: var(--primary);
+            border: 1px solid var(--border);
+        }
+
+        .btn-lang:hover {
+            background: var(--bg);
         }
 
         .live-badge {
@@ -250,6 +251,12 @@
             margin-right: 30px;
         }
 
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
         .search-container {
             flex-grow: 1;
             position: relative;
@@ -257,8 +264,8 @@
 
         .search-input {
             width: 100%;
-            background: #f1f3f1;
-            border: 2px solid transparent;
+            background: var(--surface);
+            border: 1px solid var(--border);
             border-radius: 12px;
             padding: 10px 15px 10px 40px;
             font-family: 'Inter', sans-serif;
@@ -298,43 +305,10 @@
             }
         }
 
-        .filter-select {
-            display: none;
-            /* Removido conforme solicitação */
-        }
-
-        /* Section Title */
-        .section-header {
-            margin-bottom: 1.5rem;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
-
-        .section-header h2 {
-            font-family: 'Outfit', sans-serif;
-            font-size: 1.25rem;
-            color: var(--primary);
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .badge-24h {
-            background: #e9f5e9;
-            color: var(--primary);
-            padding: 4px 10px;
-            border-radius: 50px;
-            font-size: 0.7rem;
-            font-weight: 700;
-            text-transform: uppercase;
-            white-space: nowrap;
-        }
-
         /* News Grid Scrollable Area */
         .scrollable-news {
             flex-grow: 1;
-            max-height: 70vh;
+            max-height: 80vh;
             /* Limite interno para manter a barra de busca visível no painel */
             overflow-y: auto;
             padding-right: 10px;
@@ -384,7 +358,8 @@
         }
 
         .category-tag {
-            background: #f1f3f1;
+            background: var(--bg);
+            border: 1px solid var(--border);
             color: var(--text-muted);
             padding: 4px 10px;
             border-radius: 6px;
@@ -443,7 +418,7 @@
             gap: 15px;
             margin-top: auto;
             padding-top: 1rem;
-            border-top: 1px solid #f1f3f1;
+            border-top: 1px solid var(--border);
             font-size: 0.8rem;
             color: var(--text-muted);
             white-space: nowrap;
@@ -468,7 +443,8 @@
             top: 50%;
             transform: translateY(-50%);
             width: 210px;
-            max-height: 85vh;
+            max-height: 85vh; /* Evita que a coluna corte em telas menores */
+            overflow-y: auto; /* Permite scroll interno se houver muitos dados */
             background: rgba(255, 255, 255, 0.75);
             backdrop-filter: blur(20px);
             border: 1px solid rgba(255, 255, 255, 0.4);
@@ -476,9 +452,8 @@
             padding: 22px;
             box-shadow: 0 20px 50px rgba(0, 0, 0, 0.08);
             z-index: 1000;
-            overflow-y: auto;
-            scrollbar-width: none;
             transition: all 0.3s ease;
+            scrollbar-width: none; /* Esconde barra de scroll no Firefox */
         }
 
         .sidebar-left {
@@ -508,27 +483,79 @@
         }
 
         .commodity-item {
+            position: relative;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 10px 0;
-            border-bottom: 1px solid rgba(0, 0, 0, 0.03);
+            padding: 12px 0;
+            border-bottom: 1px solid var(--border);
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .commodity-item:hover {
+            transform: translateX(5px);
         }
 
         .commodity-info {
             display: flex;
             flex-direction: column;
+            gap: 2px;
         }
 
         .commodity-name {
-            font-size: 0.75rem;
+            font-size: 0.8rem;
             font-weight: 700;
-            color: var(--text-main);
+            color: var(--primary);
+            text-decoration: none;
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+
+        .commodity-name:hover {
+            color: var(--accent);
+            text-decoration: underline;
         }
 
         .commodity-time {
-            font-size: 0.6rem;
+            font-size: 0.65rem;
             color: var(--text-muted);
+            font-weight: 500;
+        }
+
+        /* Tooltip HUD System */
+        .commodity-tooltip {
+            position: absolute;
+            left: calc(100% + 15px);
+            top: 50%;
+            transform: translateY(-50%) scale(0.95);
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 12px 18px;
+            width: fit-content;
+            min-width: 180px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.15);
+            z-index: 2000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+            pointer-events: none;
+            white-space: nowrap;
+        }
+
+        .commodity-item:hover .commodity-tooltip {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(-50%) scale(1);
+        }
+
+        .tooltip-source {
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: #8e44ad; /* Roxo legado */
+            text-transform: none;
+            display: block;
         }
 
         .commodity-price-box {
@@ -536,29 +563,10 @@
         }
 
         .commodity-price {
-            font-size: 0.85rem;
+            font-size: 0.9rem;
             font-weight: 800;
             color: var(--primary);
             display: block;
-        }
-
-        .algo-tag {
-            font-size: 0.55rem;
-            color: #8e44ad;
-            font-weight: 700;
-            text-transform: uppercase;
-            margin-top: 2px;
-            display: block;
-        }
-
-        .reliability-tag {
-            font-size: 0.5rem;
-            color: #27ae60;
-            font-weight: 800;
-            margin-top: 2px;
-            display: flex;
-            align-items: center;
-            gap: 2px;
         }
 
         .verified-badge {
@@ -573,19 +581,13 @@
             gap: 3px;
         }
 
-        .sidebar-left h3,
-        .sidebar-right h3 {
+        .sidebar-left h3 {
             border-bottom: 2px solid var(--accent);
             cursor: help;
             transition: opacity 0.3s;
         }
 
-        .sidebar-right h3 {
-            border-bottom: 2px solid #8e44ad;
-        }
-
-        .sidebar-left h3:hover,
-        .sidebar-right h3:hover {
+        .sidebar-left h3:hover {
             opacity: 0.8;
         }
 
@@ -605,18 +607,20 @@
         }
 
         .modal-content {
-            background-color: var(--white);
+            background-color: var(--surface);
+            color: var(--primary);
             padding: 30px;
             border-radius: 20px;
             max-width: 500px;
             max-height: 90vh;
             /* Limita altura */
             width: 90%;
-            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.4);
             position: relative;
             font-family: 'Inter', sans-serif;
             display: flex;
             flex-direction: column;
+            border: 1px solid var(--border);
         }
 
         .modal-header {
@@ -624,13 +628,14 @@
             align-items: center;
             gap: 15px;
             margin-bottom: 20px;
-            color: #8e44ad;
+            color: var(--accent);
         }
 
         .modal-header h2 {
             font-family: 'Outfit', sans-serif;
             font-size: 1.5rem;
             margin: 0;
+            color: var(--primary);
         }
 
         .modal-body {
@@ -642,14 +647,15 @@
         .modal-body p {
             font-size: 0.9rem;
             line-height: 1.6;
-            color: var(--text-main);
+            color: var(--primary);
+            opacity: 0.9;
             margin-bottom: 15px;
         }
 
         .modal-footer {
             margin-top: 25px;
             padding-top: 15px;
-            border-top: 1px solid #eee;
+            border-top: 1px solid var(--border);
             font-size: 0.8rem;
             color: var(--text-muted);
             font-style: italic;
@@ -686,186 +692,21 @@
             color: #e74c3c;
         }
 
-        /* Ajuste do container Centralizado */
-        .container {
-            margin: 0 auto;
-            padding: 2rem;
-            max-width: 1000px;
-            position: relative;
-        }
-
-        /* Hot Badge/Icon */
-        .hot-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 4px;
-            color: #ff4d00;
-            font-weight: 800;
-            font-size: 0.65rem;
-            text-transform: uppercase;
-            margin-bottom: 8px;
-        }
-
-        .news-card.featured {
-            border: 1px solid rgba(255, 77, 0, 0.2);
-            box-shadow: 0 10px 40px rgba(255, 77, 0, 0.05);
-        }
-
-        @media (max-width: 1300px) {
-            body {
-                overflow-y: auto;
-                height: auto;
-            }
-
-            .container {
-                margin: 0 auto;
-                padding: 0 15px 2rem;
-            }
-
-            .sidebar {
-                position: relative;
-                width: 100%;
-                left: 0;
-                top: 0;
-                transform: none;
-                max-height: none;
-                margin-top: 25px;
-                margin-bottom: 1.5rem;
-                background: white;
-                padding: 1.5rem;
-                border: 1px solid #eee;
-                border-radius: 20px;
-                display: block;
-                /* Volta a ser block para conter o grid interno */
-            }
-
-            .sidebar h3 {
-                display: flex;
-                justify-content: center;
-                font-size: 1rem;
-                margin-bottom: 20px;
-                padding-bottom: 10px;
-                border-bottom: 2px solid var(--accent);
-            }
-
-            .sidebar-right h3 {
-                border-bottom: 2px solid #8e44ad;
-            }
-
-            /* Container dos itens dentro da sidebar */
-            #commodityList,
-            #forecastList {
-                display: grid;
-                grid-template-columns: repeat(2, 1fr);
-                gap: 12px;
-                justify-items: center;
-                /* Centraliza itens no grid */
-            }
-
-            .commodity-item {
-                width: 100%;
-                max-width: 150px;
-                /* Um pouco maior para a grade */
-                min-width: 0;
-                flex-direction: column;
-                border-bottom: none;
-                background: #f9fbf9;
-                padding: 12px 8px;
-                border-radius: 12px;
-                box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-                display: flex;
-                align-items: center;
-                text-align: center;
-            }
-
-            .commodity-name {
-                font-size: 0.75rem;
-            }
-
-            .commodity-price {
-                font-size: 0.85rem;
-            }
-
-            .algo-tag {
-                font-size: 0.55rem;
-            }
-
-            .commodity-price-box {
-                text-align: center;
-                margin-top: 5px;
-            }
-        }
-
         @media (max-width: 768px) {
-            .hero {
-                height: 250px;
-                margin-bottom: -50px;
-            }
-
-            .hero h1 {
-                font-size: 1.8rem;
-            }
-
-            .hero p {
-                font-size: 0.95rem;
-            }
-
-            .main-panel {
-                padding: 1rem;
-                margin-top: 0;
-            }
-
-            .section-header h2 {
-                font-size: 1rem;
-                gap: 6px;
-            }
-
-            header {
-                flex-direction: column;
-                align-items: stretch;
-            }
-
-            .header-left {
-                margin-right: 0;
-                width: 100%;
-            }
-
-            .controls {
-                justify-content: space-between;
-                width: 100%;
-            }
-
-            button {
-                padding: 10px 14px;
-                font-size: 0.75rem;
-                flex: 1;
-                justify-content: center;
-            }
-
-            .news-grid {
-                grid-template-columns: 1fr;
-            }
-
-            /* Ajustes Finos de Modal em Mobile */
-            .modal-content {
-                width: 95%;
-                padding: 20px;
-            }
-
-            .modal-header h2 {
-                font-size: 1.25rem;
-            }
-
-            .modal-body p {
-                font-size: 0.8rem;
-                margin-bottom: 10px;
-            }
-
-            .modal-footer {
-                font-size: 0.7rem;
-                margin-top: 15px;
-                padding-top: 10px;
-            }
+            .sidebar { display: none; }
+            .hero { height: 250px; margin-bottom: -50px; }
+            .hero h1 { font-size: 1.8rem; }
+            .hero p { font-size: 0.95rem; }
+            .main-panel { padding: 1rem; margin-top: 0; }
+            header { flex-direction: column; align-items: stretch; }
+            .header-left { margin-right: 0; width: 100%; }
+            .controls { justify-content: space-between; width: 100%; }
+            button { padding: 10px 14px; font-size: 0.75rem; flex: 1; justify-content: center; }
+            .news-grid { grid-template-columns: 1fr; }
+            .modal-content { width: 95%; padding: 20px; }
+            .modal-header h2 { font-size: 1.25rem; }
+            .modal-body p { font-size: 0.8rem; margin-bottom: 10px; }
+            .modal-footer { font-size: 0.7rem; margin-top: 15px; padding-top: 10px; }
         }
 
         @media (max-width: 480px) {
@@ -902,7 +743,7 @@
     </div>
 
     <!-- Modal Metodologia CEPEA -->
-    <div id="cepeaModal" class="modal" onclick="closeCepeaMethods(event)">
+    <div id="cepeaModal" class="modal" onclick="closeModal(event, 'cepeaModal')">
         <div class="modal-content" onclick="event.stopPropagation()">
             <span class="close-modal"
                 onclick="document.getElementById('cepeaModal').style.display='none'">&times;</span>
@@ -926,41 +767,6 @@
         </div>
     </div>
 
-    <!-- Sidebar Forecast (Right) -->
-    <div class="sidebar sidebar-right">
-        <h3 onclick="showMethods()"><i class="fas fa-brain"></i> Projeção 30D</h3>
-        <div id="forecastList">
-            <div style="font-size: 0.6rem; color: #999; padding: 10px;">Aguardando IA...</div>
-        </div>
-    </div>
-
-    <!-- Modal Metodologia -->
-    <div id="methodsModal" class="modal" onclick="closeMethods(event)">
-        <div class="modal-content" onclick="event.stopPropagation()">
-            <span class="close-modal"
-                onclick="document.getElementById('methodsModal').style.display='none'">&times;</span>
-            <div class="modal-header">
-                <i class="fas fa-microchip" style="font-size: 2rem;"></i>
-                <h2>Metodologia de Projeção</h2>
-            </div>
-            <div class="modal-body">
-                <p><strong>Como o cálculo é feito:</strong> Utilizamos modelos avançados de IA (como SARIMA, LSTM e
-                    Prophet) que analisam padrões de sazonalidade e volatilidade dos últimos 5 anos de cotações CEPEA.
-                </p>
-                <p><strong>Dupla Verificação:</strong> Cada projeção passa por um filtro de "sentimento de mercado" que
-                    cruza o output do algoritmo com a tendência histórica real observada no setor para 2026, garantindo
-                    maior sobriedade nos números.</p>
-                <p><strong>Nota de Confiança:</strong> Reflete a estabilidade histórica do modelo aplicado a cada
-                    commodity específica.</p>
-            </div>
-            <div class="modal-footer">
-                <strong>Observação Importante:</strong> Estas projeções são baseadas em algoritmos estatísticos
-                probabilísticos. Elas representam tendências matemáticas e podem ou não se concretizar devido a fatores
-                externos imprevisíveis (clima, política, eventos globais).
-            </div>
-        </div>
-    </div>
-
     <div class="container">
         <div class="main-panel">
             <header>
@@ -976,16 +782,15 @@
                     </div>
                 </div>
 
-                <button class="btn-refresh" onclick="fetchNews()" id="refreshBtn">
-                    <i class="fas fa-sync-alt" id="refreshIcon"></i>
-                    Atualizar
-                </button>
+                <div class="header-actions">
+                    <button class="btn-lang" onclick="exportCommodities()" id="exportBtn" title="Copiar Resumo">
+                        <i class="fas fa-copy"></i> Exportar
+                    </button>
+                    <button class="btn-refresh" onclick="fetchNews()" id="refreshBtn">
+                        <i class="fas fa-sync-alt" id="refreshIcon"></i> Atualizar
+                    </button>
+                </div>
             </header>
-
-            <div class="section-header">
-                <h2><i class="fas fa-bolt"></i> Destaques do Dia</h2>
-                <span class="badge-24h">Últimas 24 Horas</span>
-            </div>
 
             <div class="scrollable-news">
                 <div id="newsGrid" class="news-grid">
@@ -1041,6 +846,45 @@
             { url: 'https://www.climate.gov/news/feed/rss.xml', cat: 'CLIMA' }
         ];
 
+        function showCepeaMethods() {
+            document.getElementById('cepeaModal').style.display = 'flex';
+        }
+
+        function closeModal(event, modalId) {
+            if (event.target === document.getElementById(modalId) || event.target.classList.contains('close-modal')) {
+                document.getElementById(modalId).style.display = 'none';
+            }
+        }
+
+        function exportCommodities() {
+            if (!globalCepeaData || globalCepeaData.length === 0) {
+                alert('Dados não disponíveis para exportação.');
+                return;
+            }
+
+            const header = `📊 RESUMO SUPPLY CHAIN - ${new Date().toLocaleDateString('pt-BR')}\n`;
+            const separator = `---------------------------\n`;
+            
+            let text = header + separator;
+            
+            globalCepeaData.forEach(item => {
+                const icon = item.variation.includes('-') ? '↓' : '↑';
+                text += `${item.name}: R$ ${item.price} (${icon} ${item.variation})\n`;
+            });
+
+            text += separator + `Fonte: CEPEA/ESALQ`;
+
+            navigator.clipboard.writeText(text).then(() => {
+                const btn = document.getElementById('exportBtn');
+                const originalText = btn.innerHTML;
+                btn.innerHTML = '<i class="fas fa-check"></i> Copiado!';
+                setTimeout(() => { btn.innerHTML = originalText; }, 2000);
+            }).catch(err => {
+                console.error('Falha ao copiar: ', err);
+                alert('Erro ao copiar dados.');
+            });
+        }
+
         async function fetchNews() {
             const grid = document.getElementById('newsGrid');
             const icon = document.getElementById('refreshIcon');
@@ -1090,23 +934,31 @@
             renderNews(); // Re-renderiza para atualizar o ranking
         }
 
+        let activeTag = '';
+
+        function applyTagFilter(tag) {
+            activeTag = tag;
+            const buttons = document.querySelectorAll('.filter-btn');
+            buttons.forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+            renderNews();
+        }
+
         function renderNews() {
             const grid = document.getElementById('newsGrid');
             const now = Date.now();
             const periodMs = 24 * 60 * 60 * 1000;
             const clicks = JSON.parse(localStorage.getItem('news_clicks') || '{}');
 
-            const searchTerm = document.getElementById('newsSearch')?.value.toLowerCase() || '';
+            const searchTerm = sanitize(document.getElementById('newsSearch')?.value || '').toLowerCase();
 
-            // Filtra por tempo (24h) e Palavra-Chave (com sanitização básica)
             let filtered = allNews.filter(item => {
-                const safeTitle = item.title.replace(/<[^>]*>?/gm, '').toLowerCase();
-                const safeSearch = searchTerm.replace(/[^a-z0-9\s]/gi, '').toLowerCase();
-
+                const safeTitle = sanitize(item.title).toLowerCase();
                 const timeMatch = (now - item.timestamp) <= periodMs;
-                const searchMatch = safeTitle.includes(safeSearch) ||
-                    (item.category_label || '').toLowerCase().includes(safeSearch);
-                return timeMatch && searchMatch;
+                const searchMatch = safeTitle.includes(searchTerm) ||
+                    (item.category_label || '').toLowerCase().includes(searchTerm);
+                const tagMatch = activeTag === '' || item.category_label === activeTag;
+                return timeMatch && searchMatch && tagMatch;
             });
 
             if (filtered.length === 0) {
@@ -1114,27 +966,24 @@
                 return;
             }
 
-            // Ordenação Complexa: Cliques primeiro, depois data
-            filtered.sort((a, b) => {
-                const clickA = clicks[a.link] || 0;
-                const clickB = clicks[b.link] || 0;
-                if (clickB !== clickA) return clickB - clickA;
-                return b.timestamp - a.timestamp;
-            });
+            filtered.sort((a, b) => (clicks[b.link] || 0) - (clicks[a.link] || 0) || (b.timestamp - a.timestamp));
 
             grid.innerHTML = filtered.map((item, index) => {
-                const isTrending = index < 5 && (clicks[item.link] > 0 || index < 3); // Top 5 são trending
+                const isTrending = index < 5 && (clicks[item.link] > 0 || index < 3);
                 const trendingHtml = isTrending ? `<div class="trending-badge"><i class="fas fa-fire"></i> TRENDING</div>` : '';
+                
+                // Security: Link Validation
+                const safeLink = (item.link && (item.link.startsWith('http') || item.link.startsWith('/'))) ? item.link : '#';
 
                 return `
                 <div class="news-card">
                     <div class="news-card-header">
-                        <div class="category-tag">${item.category_label}</div>
+                        <div class="category-tag">${sanitize(item.category_label)}</div>
                         ${trendingHtml}
                     </div>
-                    <a href="${item.link}" target="_blank" onclick="trackClick('${item.link}')" class="news-title">${item.title}</a>
+                    <a href="${safeLink}" target="_blank" rel="noopener noreferrer" onclick="trackClick('${sanitize(item.link)}')" class="news-title">${sanitize(item.title)}</a>
                     <div class="news-meta">
-                        <span class="source-name">${item.author || cleanSource(item.link)}</span>
+                        <span class="source-name">${sanitize(item.author || cleanSource(item.link))}</span>
                         <div class="time-badge">${timeAgo(item.timestamp)}</div>
                     </div>
                 </div>
@@ -1161,143 +1010,76 @@
             } catch (e) { return 'Fonte'; }
         }
 
-        // Monitor CEPEA (Carregamento Web Reais-Time)
-        // Monitor CEPEA (Híbrido: Web + Local Fallback)
+        let globalCepeaData = [];
+
         async function fetchCepea() {
             const list = document.getElementById('commodityList');
-            const fList = document.getElementById('forecastList');
-
             try {
-                // Tenta carregar via Fetch (Ideal para ambientes de servidor/web)
                 const response = await fetch('cepea_data.json?_cb=' + Date.now());
                 if (response.ok) {
                     const data = await response.json();
                     renderCommodities(data);
                     return;
                 }
-                throw new Error('Fetch falhou ou arquivo ausente');
+                throw new Error('Fetch falhou');
             } catch (error) {
-                // FALLBACK: Injeção de Script (Funciona em file:// e ambientes offline)
-                console.warn('Protocolo local detectado ou erro no fetch. Ativando fallback de script.');
-
-                const oldScript = document.getElementById('cepeaDataScript');
-                if (oldScript) oldScript.remove();
-
+                console.warn('Fallback script injection.');
                 const script = document.createElement('script');
                 script.id = 'cepeaDataScript';
                 script.src = `cepea_data.js?_cb=${Date.now()}`;
-
-                script.onerror = () => {
-                    if (!list.innerHTML.includes('commodity-item')) {
-                        list.innerHTML = '<div style="font-size: 0.6rem; color: #999; padding: 10px;">Erro de conexão. Verifique os arquivos locais.</div>';
-                    }
-                };
-
                 document.body.appendChild(script);
             }
         }
 
-        // Função de Renderização Unificada
-        function renderCommodities(data) {
-            const list = document.getElementById('commodityList');
-            const fList = document.getElementById('forecastList');
+        // Security: Robust Sanitization
+        function sanitize(text) {
+            if (!text || typeof text !== 'string') return '';
+            return text.replace(/&/g, "&amp;")
+                       .replace(/</g, "&lt;")
+                       .replace(/>/g, "&gt;")
+                       .replace(/"/g, "&quot;")
+                       .replace(/'/g, "&#039;");
+        }
 
+        function renderCommodities(data) {
+            globalCepeaData = data;
+            const list = document.getElementById('commodityList');
             if (!data || data.length === 0) {
-                list.innerHTML = '<div style="font-size: 0.6rem; color: #999; padding: 10px;">Aguardando dados...</div>';
+                list.innerHTML = `<div style="font-size: 0.7rem; color: var(--text-muted); padding: 10px;">Aguardando dados...</div>`;
                 return;
             }
 
-            // Render Direto (Esquerda)
             list.innerHTML = data.map(item => {
-                const isUp = !item.variation.includes('-');
-                const varClass = isUp ? 'var-up' : 'var-down';
-                const icon = isUp ? '↑' : '↓';
+                const isForward = !item.variation.includes('-');
+                const varClass = isForward ? 'var-up' : 'var-down';
+                const icon = isForward ? '↑' : '↓';
+                
+                const safeName = sanitize(item.name);
+                const safePrice = sanitize(item.price);
+                const safeVar = sanitize(item.variation);
+                const safeSource = sanitize(item.indicator_source || 'CEPEA');
+                const safeUrl = item.source_url ? encodeURI(item.source_url) : '#';
+
                 return `
                 <div class="commodity-item">
                     <div class="commodity-info">
-                        <span class="commodity-name">${item.name}</span>
-                        <span class="commodity-time">${item.updated}</span>
+                        <a href="${safeUrl}" target="_blank" class="commodity-name">${safeName}</a>
+                        <span class="commodity-time">${sanitize(item.updated || '--:--')}</span>
                     </div>
                     <div class="commodity-price-box">
-                        <span class="commodity-price">R$ ${item.price}</span>
-                        <span class="commodity-var ${varClass}">${icon} ${item.variation}</span>
+                        <span class="commodity-price">R$ ${safePrice}</span>
+                        <span class="commodity-var ${varClass}">${icon} ${safeVar}</span>
+                    </div>
+                    <div class="commodity-tooltip">
+                        <span class="tooltip-source">${safeSource}</span>
                     </div>
                 </div>`;
             }).join('');
-
-            // Motor de Projeção (Direita) - Com Sentimento e Dupla Checagem
-            const algoInfo = {
-                "Soja": { model: "SARIMA", bias: -0.005, conf: 92 },
-                "Milho": { model: "SARIMA", bias: -0.015, conf: 89 },
-                "Boi": { model: "GARCH", bias: 0.02, conf: 95 },
-                "Café": { model: "LSTM", bias: -0.01, conf: 86 },
-                "Açúcar": { model: "LSTM", bias: 0.005, conf: 88 },
-                "Etanol": { model: "LinReg", bias: 0.01, conf: 90 },
-                "Frango": { model: "Prophet", bias: 0.008, conf: 91 },
-                "Suíno": { model: "Prophet", bias: 0.005, conf: 91 },
-                "Leite": { model: "ETS", bias: 0.002, conf: 94 },
-                "Ovos": { model: "ETS", bias: 0.003, conf: 94 },
-                "Citrus": { model: "R-Forest", bias: 0, conf: 87 },
-                "Trigo": { model: "VAR", bias: -0.002, conf: 93 }
-            };
-
-            fList.innerHTML = data.map(item => {
-                const projectedPrice = item.projected_price || item.price;
-                const trendStr = item.projected_trend || '0,00%';
-                const conf = item.conf || 85;
-                const model = item.model || 'IA';
-                const isUp = !trendStr.includes('-');
-
-                return `
-                <div class="commodity-item" style="padding: 12px 0;">
-                    <div class="commodity-info" style="gap: 2px;">
-                        <div style="display: flex; align-items: center; gap: 6px;">
-                            <span class="commodity-name">${item.name}</span>
-                            <i class="fas fa-check-double" style="color: #27ae60; font-size: 0.6rem;" title="Dupla Checagem Histórica"></i>
-                        </div>
-                        <div style="display: flex; flex-direction: column;">
-                            <span class="algo-tag">${model}</span>
-                            <div class="reliability-tag"><i class="fas fa-shield-alt"></i> ${conf}% Confiança</div>
-                        </div>
-                    </div>
-                    <div class="commodity-price-box">
-                        <span class="commodity-price">R$ ${projectedPrice}</span>
-                        <span class="commodity-var ${isUp ? 'var-up' : 'var-down'}">${isUp ? '↑' : '↓'} ${trendStr.replace('+', '').replace('-', '')}</span>
-                    </div>
-                </div>`;
-            }).join('');
-        };
-
-        function showCepeaMethods() {
-            document.getElementById('cepeaModal').style.display = 'flex';
         }
 
-        function closeCepeaMethods(event) {
-            if (event.target.id === 'cepeaModal') {
-                document.getElementById('cepeaModal').style.display = 'none';
-            }
-        }
-
-        // Funções do Modal IA
-        function showMethods() {
-            document.getElementById('methodsModal').style.display = 'flex';
-        }
-
-        function closeMethods(event) {
-            if (event.target.id === 'methodsModal') {
-                document.getElementById('methodsModal').style.display = 'none';
-            }
-        }
-
-        // Inicialização
-        fetchNews();
-        fetchCepea();
-
-        // Monitoramento Real-Time (Sincronizado)
-        setInterval(() => {
-            fetchNews();
-            fetchCepea();
-        }, 5 * 60 * 1000);
+        // Init
+        fetchNews(); fetchCepea();
+        setInterval(() => { fetchNews(); fetchCepea(); }, 300000);
     </script>
 </body>
 
