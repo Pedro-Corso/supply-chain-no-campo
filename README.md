@@ -1,4 +1,4 @@
-[README.md](https://github.com/user-attachments/files/26634077/README.md)
+
 # Supply Chain no Campo 
 
 Dashboard inteligente para monitoramento em tempo real (atualização a cada 5 min) de preços de comodities, indicadores CEPEA e notícias globais de logística e agronegócio.
